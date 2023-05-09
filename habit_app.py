@@ -3,19 +3,20 @@ import datetime
 import os
 import pathlib
 import pickle
+from dataclasses import dataclass
 from typing import Optional
 
 
-class Task:
+@dataclass
+class Task(object):
     """
     タスク管理(ID、説明、作成日、完了日を情報として持つ)
     """
 
-    def __init__(self, id, description):
-        self.id = id
-        self.description = description
-        self.created_date = datetime.datetime.now()
-        self.completed_date = None
+    task_id: int
+    description: str
+    created_date: datetime.datetime = datetime.datetime.now()
+    completed_date: Optional[datetime.datetime] = None
 
 
 def parse_args(prog: Optional[str] = None) -> argparse.Namespace:
@@ -27,7 +28,7 @@ def parse_args(prog: Optional[str] = None) -> argparse.Namespace:
     parser.add_argument(
         "--task-pkl",
         type=pathlib.Path,
-        default=pathlib.Path(__file__).resolve(),
+        default=pathlib.Path(__file__).resolve().parent / "task.pkl",
         help="Path to the task information",
     )
 
@@ -85,13 +86,13 @@ def main(prog: Optional[str] = None) -> None:
     elif args.command == "show":
         for task in tasks:
             status = "done" if task.completed_date else "not done"
-            print(f"{task.id}: {task.description} ({status})")
+            print(f"{task.task_id}: {task.description} ({status})")
 
     elif args.command == "done":
         for task in tasks:
-            if task.id == args.id:
+            if task.task_id == args.id:
                 task.completed_date = datetime.datetime.now()
-                print(f"Task {id} marked as done")
+                print(f"Task {task.task_id} marked as done")
                 break
     else:
         print("Task not found")
