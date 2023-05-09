@@ -65,7 +65,7 @@ def parse_args(prog: Optional[str] = None) -> argparse.Namespace:
 
 
 def main(prog: Optional[str] = None) -> None:
-    args = parse_args()
+    args = parse_args(prog=prog)
 
     if args.task_pkl.exists():
         with args.task_pkl.open("rb") as rf:
